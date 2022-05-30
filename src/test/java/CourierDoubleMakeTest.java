@@ -3,15 +3,13 @@ import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
 import io.qameta.allure.junit4.DisplayName;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-public class CourierMakeTest {
+public class CourierDoubleMakeTest {
 
     CourierClient courierClient;
     int courierId;
@@ -27,15 +25,16 @@ public class CourierMakeTest {
     }
 
     @Test
-    @DisplayName("Courier is creating")
-    @Description("Try to create new courier")
+    @DisplayName("Creatin double courier")
+    @Description("Try to create new courier with same name")
     public void courier() {
         Courier courier = Courier.getRandom();
         boolean isCreated = courierClient.create(courier);
-        courierId = courierClient.login(CourierCredentials.from(courier));
         assertTrue(isCreated);
-        assertNotEquals(0, courierId);
-        System.out.println("Courier with id: " + courierId + " have been created");
+        String errorDoubleLogin = courierClient.doubleCreate(courier);
+        assertEquals("Этот логин уже используется. Попробуйте другой.", errorDoubleLogin);
+        System.out.println("Courier login is busy");
+        courierId = courierClient.login(CourierCredentials.from(courier));
     }
 
 }

@@ -1,23 +1,26 @@
+import io.qameta.allure.Description;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import static org.apache.http.HttpStatus.SC_OK;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+
 
 public class CourierLoginTest {
 
     CourierClient courierClient;
     int courierId;
+    Courier courier;
+
 
     @Before
     public void setUp() {
         courierClient = new CourierClient();
+        courier = Courier.getRandom();
+        courierClient.create(courier);
     }
 
     @After
@@ -26,22 +29,15 @@ public class CourierLoginTest {
     }
 
     @Test
-    public void courier() {
-        Courier courier = Courier.getRandom();
-        boolean isCreated = courierClient.create(courier);
-        courierId = courierClient.login(CourierCredentials.from(courier));
+    @DisplayName("Courier login test")
+    @Description("Courier can login with right credentials")
+    public void courierCanLoginWithNormCred() {
+        ValidatableResponse loginResponse = courierClient.fullLogin(CourierCredentials.from(courier));
+        int statusCode = loginResponse.extract().statusCode();
+        courierId = loginResponse.extract().path("id");
 
-        assertTrue(isCreated);
-        assertNotEquals(0, courierId);
+        assertThat("Courer cannot login", statusCode, equalTo(SC_OK));
+        assertThat("Courer ID is incorrect", courierId, is(not(0)));
     }
 
-    /*@Test
-    public  void courierCanLoginWithValidCredentials() {
-        ValidatableResponse loginResponce = courierClient.login(new CourierCredentials(courier.login, courier.password));
-        int statusCode = loginResponce.extract().statusCode();
-        courierId = loginResponce.extract().path( "id");
-
-        assertThat("Courier cannot login", statusCode, equalTo(SC_OK));
-        assertThat("Courier ID is incorrect", courierId, is(not(0)));
-    }*/
 }

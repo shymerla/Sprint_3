@@ -1,12 +1,16 @@
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
+import lombok.Builder;
+import lombok.Data;
 import org.apache.commons.lang3.RandomStringUtils;
 
+@Data
+@Builder
 public class Courier {
 
-    public String login;
-    public String password;
-    public String firstName;
+    private String login;
+    private String password;
+    private String firstName;
 
     public Courier(String login, String password, String firstName) {
         this.login = login;
@@ -20,6 +24,10 @@ public class Courier {
         final String login = RandomStringUtils.randomAlphabetic(10);
         final String password = RandomStringUtils.randomAlphabetic(10);
         final String firstName = RandomStringUtils.randomAlphabetic(10);
+
+        System.out.println(login);
+        System.out.println(password);
+        System.out.println(firstName);
 
         Allure.addAttachment("Login: ", login);
         Allure.addAttachment("Password: ", password);

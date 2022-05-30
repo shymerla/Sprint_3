@@ -1,21 +1,22 @@
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
 public class CourierCredentials {
 
-    private final String login;
-
-    private final String password;
+    public String login;
+    public String password;
 
     public CourierCredentials(String login, String password) {
         this.login = login;
         this.password = password;
     }
 
-    public String login() {
-        return login;
+    public static CourierCredentials from(Courier courier) {
+        System.out.println("!!!" + courier.getLogin());
+        System.out.println("!!!" + courier.getPassword());
+        return new CourierCredentials(courier.getLogin(), courier.getPassword());
     }
-
-    public String password() {
-        return password;
-    }
-
 
 }
